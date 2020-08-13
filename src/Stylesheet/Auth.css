@@ -1,0 +1,11 @@
+.container-style {
+  border: 2px solid lightgrey;
+  border-radius: 25px;
+  padding: 40px;
+}
+
+#header {
+  color: orange;
+  font-size: x-large;
+  font-weight: 700;
+}
