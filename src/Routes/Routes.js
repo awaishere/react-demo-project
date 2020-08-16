@@ -14,9 +14,9 @@ function Routes() {
   return (
     <Router>
       <Switch>
+        <Route path={["/", "/profile"]} exact component={Profile} />
         <Route path={["/", "/login"]} exact component={Login} />
         <Route path="/signup" component={Signup} />
-        <Route path="/profile" component={Profile} />
         <Route path="/article" component={ShowArticle} />
       </Switch>
     </Router>

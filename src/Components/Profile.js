@@ -49,13 +49,14 @@ function Profile() {
       })
   }
 
-  const fetchData = async () => {
-    let personId = await getPerson()
-    let articles = await getArticles(personId);
-    setArticles(articles)
-  }
+
 
   useEffect(() => {
+    const fetchData = async () => {
+      let personId = await getPerson()
+      let articles = await getArticles(personId);
+      setArticles(articles)
+    }
     fetchData();
     document.title = "User Profile"
   }, [])
@@ -84,7 +85,7 @@ function Profile() {
       </Container>
 
       {
-        articles.length != 0 ?
+        articles && articles.length !== 0 ?
           (<Container>
             <h3>Articles Created</h3>
             {
