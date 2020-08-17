@@ -7,9 +7,9 @@ function NavigationBar() {
     <Navbar bg="dark" variant="dark" style={{ height: '75px', paddingLeft: '50px' }}>
       <Navbar.Brand href="#home">Alpha Blog Application</Navbar.Brand>
       <Nav className="mr-auto">
-        <Nav.Link><Link style={{ textDecoration: 'none', color: 'lightgrey' }} to="/create_article">Create Article</Link></Nav.Link>
+        <Link style={{ textDecoration: 'none', color: 'lightgrey' }} to="/create_article">Create Article</Link>
       </Nav>
-      <Nav.Link><Link style={{ color: 'white' }} to="/logout">Logout</Link></Nav.Link>
+      <Link style={{ color: 'white' }} to="/logout">Logout</Link>
     </Navbar >
   )
 }

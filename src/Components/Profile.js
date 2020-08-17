@@ -16,11 +16,10 @@ function Profile() {
   })
   const [articles, setArticles] = useState([])
 
-  const getArticles = async user_id => {
-    console.log(user_id)
+  const getArticles = async (token) => {
     return await axios.get('https://m-alpha-blog.herokuapp.com/api/v1/articles', {
-      params: {
-        user_id: user_id
+      headers: {
+        'Authorization': `Bearer ${token}`
       }
     })
       .then(res => {
@@ -32,15 +31,35 @@ function Profile() {
       })
   }
 
+  const getUser = (token) => {
+    axios.get('https://m-alpha-blog.herokuapp.com/api/v1/auto_login', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(res => {
+
+        setUser({
+          email: res.data.email,
+          username: res.data.username
+        })
+      })
+      .catch(err => {
+
+      })
+  }
+
   useEffect(() => {
-    if (localStorage.getItem("user")) {
-      let { id, username, email } = JSON.parse(localStorage.getItem("user"))
+    if (localStorage.getItem("auth_token")) {
+
+      let auth_token = localStorage.getItem("auth_token")
       setUser({
-        email: email,
-        username: username
+        email: 'email',
+        username: 'username'
       })
       const fetchData = async () => {
-        let articles = await getArticles(id);
+        getUser(auth_token)
+        let articles = await getArticles(auth_token);
         setArticles(articles)
       }
       fetchData();

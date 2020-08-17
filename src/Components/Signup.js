@@ -40,12 +40,7 @@ function Signup(props) {
         console.log(res)
         if (res.data.data) {
           alert("User is created!")
-
-          localStorage.setItem("user", JSON.stringify({
-            id: res.data.data.id,
-            username: res.data.data.attributes.username,
-            email: res.data.data.attributes.email
-          }))
+          localStorage.setItem("auth_token", res.data.data.attributes.auth_token)
 
           props.history.push('profile')
         } else {
