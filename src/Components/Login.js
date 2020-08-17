@@ -7,23 +7,60 @@ import {
   Col
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
 
-function Login() {
+function Login(props) {
 
   useEffect(() => {
     document.title = "Login"
   }, [])
 
-  const handleInput = (event, field) => {
-    setPerson({ ...person, [field]: event.target.value })
-    console.log(person)
+  const [person, setPerson] = useState({
+    username: '',
+    password: ''
+  })
+
+  const validateUser = async () => {
+    let user = {
+      username: person.username,
+      password: person.password
+    }
+
+    await axios.post('https://m-alpha-blog.herokuapp.com/api/v1/login', {
+      "user": user
+    })
+      .then(res => {
+        console.log(res)
+        if (res.data.data) {
+          alert("Logged in successfully")
+
+          localStorage.setItem("user", JSON.stringify({
+            id: res.data.data.id,
+            username: res.data.data.attributes.username,
+            email: res.data.data.attributes.email
+          }))
+
+          props.history.push('profile')
+        } else {
+          alert("Invalid credentials")
+        }
+
+      })
+      .catch(err => {
+        alert("Something went wrong")
+
+      })
   }
 
-  const [person, setPerson] = useState({
-    email: '',
-    password: '',
-    age: 0
-  })
+  const handleInput = (event, field) => {
+    console.log(person, event.target.value)
+    setPerson({ ...person, [field]: event.target.value })
+  }
+
+  const handleLogin = e => {
+    e.preventDefault();
+    validateUser()
+  }
 
   return (
     <Container style={{ marginTop: '10%' }}>
@@ -31,23 +68,21 @@ function Login() {
         <Col className="d-flex flex-column container-style" xs={6} style={{ margin: '0 auto' }}>
           <p id="header" className="align-self-center">Alpha Blog Application</p>
 
-          <Form className="d-flex flex-column">
-            <Form.Group controlId="formBasicEmail">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control type="email" value={person.email} placeholder="Enter email" onChange={e => handleInput(e, "email")} />
+          <Form className="d-flex flex-column" onSubmit={handleLogin}>
+            <Form.Group controlId="formBasicUsername">
+              <Form.Label>Username</Form.Label>
+              <Form.Control type="text" value={person.username} placeholder="Enter username"
+                onChange={e => handleInput(e, "username")} />
             </Form.Group>
 
             <Form.Group controlId="formBasicPassword">
               <Form.Label>Password</Form.Label>
-              <Form.Control type="password" value={person.password} placeholder="Password" onChange={e => handleInput(e, "password")} />
+              <Form.Control type="password" value={person.password} placeholder="Password"
+                onChange={e => handleInput(e, "password")} />
             </Form.Group>
 
-            <Form.Group controlId="formBasicAge">
-              <Form.Label>Age</Form.Label>
-              <Form.Control type="number" value={person.age} placeholder="Enter your age" onChange={e => handleInput(e, "age")} />
-            </Form.Group>
-
-            <Button style={{ width: '40%' }} className="align-self-center" variant="outline-success" type="submit">
+            <Button style={{ width: '40%' }} className="align-self-center"
+              variant="outline-success" type="submit">
               Login
             </Button>
 
