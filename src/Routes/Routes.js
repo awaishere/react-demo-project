@@ -10,6 +10,7 @@ import Profile from '../Components/Profile'
 import ShowArticle from '../Components/ShowArticle'
 import CreateArticle from '../Components/CreateArticle'
 import Logout from '../Components/Logout'
+import EditArticle from '../Components/EditArticle'
 
 function Routes() {
   return (
@@ -18,9 +19,10 @@ function Routes() {
         <Route path={["/", "/login"]} exact component={Login} />
         <Route path={["/profile"]} component={Profile} />
         <Route path="/signup" component={Signup} />
-        <Route path="/article" component={ShowArticle} />
         <Route path="/create_article" component={CreateArticle} />
         <Route path="/logout" component={Logout} />
+        <Route path="/article/:id" component={ShowArticle} />
+        <Route path="/edit_article/:id" component={EditArticle} />
       </Switch>
     </Router>
   )

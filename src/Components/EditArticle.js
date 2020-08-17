@@ -2,15 +2,33 @@ import React, { useState, useEffect } from 'react'
 import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 import axios from 'axios'
 
-function CreateArticle(props) {
+function EditArticle(props) {
 
   const [article, setArticle] = useState({
     title: '',
-    description: ''
+    description: '',
+    id: null
   })
 
   useEffect(() => {
-    document.title = "Create Article"
+    const headers = {
+      'Authorization': `Bearer ${localStorage.getItem("auth_token")}`
+    }
+    axios.get(`https://m-alpha-blog.herokuapp.com/api/v1/articles/${props.match.params.id}`, {
+      headers: headers
+    })
+      .then(res => {
+        console.log(res)
+        setArticle({
+          title: res.data.title,
+          description: res.data.description,
+          id: res.data.id
+        })
+      })
+      .catch(err => {
+
+      })
+    document.title = "Edit Article"
   }, [])
 
   const handleInput = (event) => {
@@ -18,18 +36,18 @@ function CreateArticle(props) {
     setArticle({ ...article, [event.target.name]: event.target.value })
   }
 
-  const createArticle = async (payload, token) => {
+  const editArticle = async (payload, token) => {
     console.log("token is here", token)
     const headers = {
       'Authorization': `Bearer ${token}`
     }
-    axios.post('https://m-alpha-blog.herokuapp.com/api/v1/articles', { article: payload }, {
+    axios.patch(`https://m-alpha-blog.herokuapp.com/api/v1/articles/${article.id}`, { article: payload }, {
       headers: headers
     })
       .then(res => {
         console.log("---->", res)
         if (res.data.data) {
-          alert("Article is created")
+          alert("Article is edited")
           props.history.push(`/article/${res.data.data.id}`)
         } else {
           alert("Invalid title or description")
@@ -47,7 +65,7 @@ function CreateArticle(props) {
       title: article.title,
       description: article.description
     }
-    createArticle(articlePayload, auth_token)
+    editArticle(articlePayload, auth_token)
   }
 
   return (
@@ -72,7 +90,7 @@ function CreateArticle(props) {
             <Button style={{ width: '40%' }} className="align-self-center" variant="outline-success"
               type="submit"
               onClick={handleSubmit}>
-              Create Article
+              Edit Article
             </Button>
           </Form>
         </Col>
@@ -81,4 +99,4 @@ function CreateArticle(props) {
   )
 }
 
-export default CreateArticle
+export default EditArticle

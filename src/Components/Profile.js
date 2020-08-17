@@ -7,6 +7,7 @@ import {
 } from 'react-bootstrap'
 import axios from 'axios'
 import NavigationBar from './NavigationBar'
+import { Link } from 'react-router-dom'
 
 function Profile() {
 
@@ -98,11 +99,14 @@ function Profile() {
             (<Container>
               <h3>Articles Created</h3>
               {
-                articles.map((item, index) => <Article key={item.id}
-                  number={index + 1}
-                  title={item.attributes.title}
-                  description={item.attributes.description}
-                />)
+                articles.map((item, index) => (
+                  <Article key={item.id}
+                    number={index + 1}
+                    title={item.attributes.title}
+                    description={item.attributes.description}>
+                    <Link to={`/article/${item.id}`}>Show article</Link>
+                  </Article>
+                ))
               }
             </Container>) : null
         }

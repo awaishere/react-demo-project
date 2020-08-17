@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card } from 'react-bootstrap'
 
-function Article({ number, title, description }) {
+function Article({ number, title, description, children }) {
   return (
     <Card className="text-center" style={{ marginBottom: '20px' }}>
       <Card.Header><i>ARTICLE {number}</i></Card.Header>
@@ -11,6 +11,7 @@ function Article({ number, title, description }) {
           {description}
         </Card.Text>
       </Card.Body>
+      <Card.Footer>{children}</Card.Footer>
     </Card>
   )
 }
