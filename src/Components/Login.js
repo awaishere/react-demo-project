@@ -7,7 +7,19 @@ import {
   Col
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify';
 import axios from 'axios'
+
+import { UserActions } from 'app/store/actions'
+import { connect } from 'react-redux'
+
+let connectProps = {
+  ...UserActions,
+};
+
+let connectState = state => ({});
+
+let enhancer = connect(connectState, connectProps);
 
 function Login(props) {
 
@@ -93,4 +105,4 @@ function Login(props) {
   )
 }
 
-export default Login
+export default enhancer(Login)

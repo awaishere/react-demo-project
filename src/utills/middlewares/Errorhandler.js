@@ -1,26 +1,32 @@
-import { AlertActions } from "../../store/actions"
+import { toast } from 'react-toastify';
+import { UserActions } from '../../store/actions';
 
 export default () => next => action => {
-  return typeof action === "function"
+  return typeof action === 'function'
     ? next(async (dispatch, getState) => {
-      try {
-        return await action(dispatch, getState)
-      } catch (error) {
-        let response = error.response
-        if (response && (response.data || response.statusText)) {
-          if (response.config.url)
-            return dispatch(
-              AlertActions.addAlert(
-                "error",
-                response.data ? response.data.error : response.statusText
-              )
-            )
-        } else if (error && error.message) {
-          return dispatch(AlertActions.addAlert("error", error.message))
-        } else {
-          throw error
+        try {
+          return await action(dispatch, getState);
+        } catch (error) {
+          dispatch(UserActions.hideHUD());
+          let response = error.response;
+          console.log('error', response);
+          if (response && (response.data || response.statusText)) {
+            if (response.config.url) {
+              console.log(response.data ? response.data.errors : response.statusText);
+              toast.error(
+                response.data && response.data.errors
+                  ? response.data.errors.join(', ')
+                  : response.statusText
+              );
+            }
+          } else if (error && error.message) {
+            if (!error.message === 'Network Error') {
+              toast.error(error.message);
+            }
+          } else {
+            throw error;
+          }
         }
-      }
-    })
-    : next(action)
-}
+      })
+    : next(action);
+};

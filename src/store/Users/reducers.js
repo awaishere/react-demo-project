@@ -1,19 +1,38 @@
-import { combineReducers } from "redux"
-import { Map } from 'immutable'
+import { combineReducers } from 'redux';
+import { Map } from 'immutable';
 
-const initialMap = {
-  all_products: [],
-}
+const userDefault = {
+  currentUser: null,
+};
 
-function users(state = Map(initialMap), action) {
+const metaDefault = {
+  showHUD: false
+};
+
+function metaReducer(state = Map(metaDefault), action) {
   switch (action.type) {
-    case 'GET_ALL_PRODUCTS':
-      return state.set("products", action.payload.products)
+    case 'SHOW_HUD':
+      return state.set('showHUD', true);
+
+    case 'HIDE_HUD':
+      return state.set('showHUD', false);
+
     default:
       return state;
   }
 }
 
+const currentUserReducer = (state = Map(userDefault), action) => {
+  switch (action.type) {
+    case 'SET_CURRENT_USER':
+      return state.set('currentUser', action.payload);
+
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
-  users: users
-})
+  meta: metaReducer,
+  current: currentUserReducer,
+});

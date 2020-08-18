@@ -1,24 +1,14 @@
-import axios from 'axios'
+import axios from 'axios';
 
-export const storeToken = async (token) => {
+export let setToken = async token => {
   axios.defaults.headers.common = {
     'Content-Type': 'application/json',
-    Accept: 'application/json',
-    Authorization: token,
-  }
-  try {
-    await localStorage.setItem('auth_token', token)
-  } catch (error) {
-    console.log('Error saving token');
-  }
-}
+    'AUTH-TOKEN': token,
+  };
+};
 
-export const removeToken = async () => {
-  try {
-    await localStorage.removeItem('auth_token');
-  } catch (error) {
+export let unsetToken = async () => {
+  axios.defaults.headers.common['AUTH-TOKEN'] = null;
 
-  }
-}
-
-
+  localStorage.clear();
+};

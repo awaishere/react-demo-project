@@ -1,10 +1,8 @@
 import User from './Users/reducers'
-import Alert from './Alert/reducers'
 import { combineReducers } from 'redux'
 
 const appReducer = combineReducers({
-  User,
-  Alert
+  User
 })
 
 const rootReducer = (state, action) => {
