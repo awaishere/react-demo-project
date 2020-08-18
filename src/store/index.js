@@ -12,7 +12,7 @@ const persistConfig = {
   storage,
 }
 const persistedReducer = persistReducer(persistConfig, rootReducer)
-const store = createStore(persistedReducer, composeEnhancers(applyMiddleware(...middlewares)))
+const store = createStore(persistedReducer, {}, composeEnhancers(applyMiddleware(...middlewares)))
 let persistor = persistStore(store)
 
 export { store, persistor }

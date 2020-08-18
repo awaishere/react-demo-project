@@ -1,12 +1,10 @@
 import User from './Users/reducers'
 import Alert from './Alert/reducers'
-import Loader from './Loader/reducers'
 import { combineReducers } from 'redux'
 
 const appReducer = combineReducers({
   User,
-  Alert,
-  Loader,
+  Alert
 })
 
 const rootReducer = (state, action) => {
