@@ -5,67 +5,27 @@ import {
   Container,
   Card
 } from 'react-bootstrap'
-import axios from 'axios'
 import NavigationBar from './NavigationBar'
 import { Link } from 'react-router-dom'
+import { UserActions } from '../store/actions'
+import { connect } from 'react-redux'
 
-function Profile() {
+let connectProps = {
+  ...UserActions,
+};
 
-  const [user, setUser] = useState({
-    username: '',
-    email: 'gmail.com'
-  })
-  const [articles, setArticles] = useState([])
+let connectState = state => ({
+  articles: state.User.current.get('articles'),
+  user: state.User.current.get('currentUser')
+});
 
-  const getArticles = async (token) => {
-    return await axios.get('https://m-alpha-blog.herokuapp.com/api/v1/articles', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-      .then(res => {
+let enhancer = connect(connectState, connectProps);
 
-        return res.data.data
-      })
-      .catch(err => {
-
-      })
-  }
-
-  const getUser = (token) => {
-    axios.get('https://m-alpha-blog.herokuapp.com/api/v1/auto_login', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-      .then(res => {
-
-        setUser({
-          email: res.data.email,
-          username: res.data.username
-        })
-      })
-      .catch(err => {
-
-      })
-  }
+function Profile(props) {
 
   useEffect(() => {
-    if (localStorage.getItem("auth_token")) {
-
-      let auth_token = localStorage.getItem("auth_token")
-      setUser({
-        email: 'email',
-        username: 'username'
-      })
-      const fetchData = async () => {
-        getUser(auth_token)
-        let articles = await getArticles(auth_token);
-        setArticles(articles)
-      }
-      fetchData();
-      document.title = "User Profile"
-    }
+    props.getArticles();
+    document.title = "User Profile"
   }, [])
 
   return (
@@ -83,23 +43,23 @@ function Profile() {
               display: 'flex',
               alignItems: 'center',
             }}>
-              <h2>Welcome {user.username}</h2>
+              <h2>Welcome {props.user && props.user.attributes.username}</h2>
             </div>
             <Card.Body>
-              <Card.Title>username: {user.username}</Card.Title>
+              <Card.Title>username: {props.user && props.user.attributes.username}</Card.Title>
               <Card.Text>
-                email: <i>{user.email}</i>
+                email: <i>{props.user && props.user.attributes.email}</i>
               </Card.Text>
             </Card.Body>
           </Card>
         </Container>
 
         {
-          articles && articles.length !== 0 ?
+          props.articles && props.articles.length !== 0 ?
             (<Container>
               <h3>Articles Created</h3>
               {
-                articles.map((item, index) => (
+                props.articles.map((item, index) => (
                   <Article key={item.id}
                     number={index + 1}
                     title={item.attributes.title}
@@ -115,4 +75,4 @@ function Profile() {
   )
 }
 
-export default Profile
+export default enhancer(Profile)

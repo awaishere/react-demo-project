@@ -1,50 +1,29 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Card, Container, Button } from 'react-bootstrap'
-import axios from 'axios'
 import NavigationBar from './NavigationBar'
+import { UserActions } from '../store/actions'
+import { connect } from 'react-redux'
+
+let connectProps = {
+  ...UserActions,
+};
+
+let connectState = state => ({
+  article: state.User.current.get('article')
+});
+
+let enhancer = connect(connectState, connectProps);
 
 function ShowArticle(props) {
-  const [article, setArticle] = useState({
-    title: 'title',
-    description: 'description',
-    id: null
-  })
-  useEffect(() => {
-    const headers = {
-      'Authorization': `Bearer ${localStorage.getItem("auth_token")}`
-    }
-    axios.get(`https://m-alpha-blog.herokuapp.com/api/v1/articles/${props.match.params.id}`, {
-      headers: headers
-    })
-      .then(res => {
-        console.log(res)
-        setArticle({
-          id: res.data.id,
-          title: res.data.title,
-          description: res.data.description
-        })
-      })
-      .catch(err => {
 
-      })
+  useEffect(() => {
+
+    props.getArticle(props.match.params.id)
   }, [])
 
   const handleDelete = async () => {
-    const headers = {
-      'Authorization': `Bearer ${localStorage.getItem("auth_token")}`
-    }
-    axios.delete(`https://m-alpha-blog.herokuapp.com/api/v1/articles/${article.id}`, {
-      headers: headers
-    })
-      .then(res => {
-        console.log(res)
-        // if 
-        alert("Article is deleted")
-        props.history.push('/profile')
-      })
-      .catch(err => {
-
-      })
+    await props.deleteArticle(props.article.id)
+    props.history.push('/profile')
   }
 
   return (
@@ -55,14 +34,14 @@ function ShowArticle(props) {
         <Card className="text-center" style={{ marginBottom: '20px' }}>
           <Card.Header><i>ARTICLE</i></Card.Header>
           <Card.Body>
-            <Card.Title>{article.title}</Card.Title>
+            <Card.Title>{props.article && props.article.title}</Card.Title>
             <Card.Text>
-              {article.description}
+              {props.article && props.article.description}
             </Card.Text>
           </Card.Body>
           <Card.Footer>
             <Button onClick={() => {
-              props.history.push(`/edit_article/${article.id}`)
+              props.history.push(`/edit_article/${props.article && props.article.id}`)
             }}
               variant="outline-info">Edit Article</Button>{' '}
             <Button onClick={handleDelete} variant="outline-danger">Delete Article</Button>{' '}
@@ -73,4 +52,4 @@ function ShowArticle(props) {
   )
 }
 
-export default ShowArticle
+export default enhancer(ShowArticle)

@@ -49,3 +49,49 @@ export const signUp = payload => async dispatch => {
   dispatch(hideHUD());
 };
 
+export const getArticles = () => async dispatch => {
+  const { data } = await client().get(api.getArticles());
+  dispatch({ type: 'SET_ARTICLES', payload: data.data })
+}
+
+export const getArticle = id => async dispatch => {
+  const { data } = await client().get(api.getArticle(id));
+  dispatch({ type: 'SET_ARTICLE', payload: data })
+}
+
+export const deleteArticle = id => async () => {
+  await client().delete(api.deleteArticle(id))
+  toast.error("Article is deleted.")
+}
+
+export const editArticle = (id, payload) => async dispatch => {
+  dispatch(showHUD());
+  const { data } = await client().patch(api.editArticle(id), { article: payload })
+  if (data.data) {
+    toast.success('Article is updated successfully!');
+    dispatch({ type: 'SET_ARTICLE', payload: data.data })
+    dispatch(hideHUD());
+    return 1
+  }
+  else {
+    toast.error('Invalid title or description!');
+  }
+  dispatch(hideHUD());
+}
+
+export const createArticle = (payload) => async dispatch => {
+  dispatch(showHUD());
+  const { data } = await client().post(api.createArticle(), { article: payload })
+  console.log("data ====>", data)
+  if (data.data) {
+    toast.success('Article is added successfully!');
+    dispatch({ type: 'SET_ARTICLE', payload: data.data })
+    dispatch(hideHUD());
+    return data.data.id
+  }
+  else {
+    toast.error('Invalid title or description!');
+  }
+  dispatch(hideHUD());
+}
+

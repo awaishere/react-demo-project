@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Row, Col, Form, Button } from 'react-bootstrap'
+import { Container, Row, Col, Form, Button, Spinner } from 'react-bootstrap'
 import NavigationBar from './NavigationBar'
-import axios from 'axios'
+import { UserActions } from '../store/actions'
+import { connect } from 'react-redux'
+
+let connectProps = {
+  ...UserActions,
+};
+
+let connectState = state => ({
+  loader: state.User.meta.get('showHUD')
+});
+
+let enhancer = connect(connectState, connectProps);
 
 function CreateArticle(props) {
 
@@ -19,37 +30,18 @@ function CreateArticle(props) {
     setArticle({ ...article, [event.target.name]: event.target.value })
   }
 
-  const createArticle = async (payload, token) => {
-    console.log("token is here", token)
-    const headers = {
-      'Authorization': `Bearer ${token}`
-    }
-    axios.post('https://m-alpha-blog.herokuapp.com/api/v1/articles', { article: payload }, {
-      headers: headers
-    })
-      .then(res => {
-        console.log("---->", res)
-        if (res.data.data) {
-          alert("Article is created")
-          props.history.push(`/article/${res.data.data.id}`)
-        } else {
-          alert("Invalid title or description")
-        }
-      })
-      .catch(err => {
-
-      })
-  }
-
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    let auth_token = localStorage.getItem("auth_token")
     let articlePayload = {
       title: article.title,
       description: article.description
     }
-    createArticle(articlePayload, auth_token)
+    let response = await props.createArticle(articlePayload)
+    if (response) {
+      props.history.push(`/article/${response}`)
+    }
   }
+  let { loader } = props;
 
   return (
     <>
@@ -77,7 +69,17 @@ function CreateArticle(props) {
                 type="submit"
                 onClick={handleSubmit}>
                 Create Article
-            </Button>
+
+                {loader && <Spinner
+                  style={{ marginLeft: '10px' }}
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                }
+              </Button>
             </Form>
           </Col>
         </Row>
@@ -86,4 +88,4 @@ function CreateArticle(props) {
   )
 }
 
-export default CreateArticle
+export default enhancer(CreateArticle)

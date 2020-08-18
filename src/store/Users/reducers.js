@@ -3,6 +3,8 @@ import { Map } from 'immutable';
 
 const userDefault = {
   currentUser: null,
+  articles: [],
+  article: null
 };
 
 const metaDefault = {
@@ -26,6 +28,12 @@ const currentUserReducer = (state = Map(userDefault), action) => {
   switch (action.type) {
     case 'SET_CURRENT_USER':
       return state.set('currentUser', action.payload);
+
+    case 'SET_ARTICLES':
+      return state.set('articles', action.payload)
+
+    case 'SET_ARTICLE':
+      return state.set('article', action.payload)
 
     default:
       return state;

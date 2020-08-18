@@ -1,34 +1,32 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Row, Col, Form, Button } from 'react-bootstrap'
-import axios from 'axios'
+import { Container, Row, Col, Form, Button, Spinner } from 'react-bootstrap'
 import NavigationBar from './NavigationBar'
+import { UserActions } from '../store/actions'
+import { connect } from 'react-redux'
+
+let connectProps = {
+  ...UserActions,
+};
+
+let connectState = state => ({
+  article: state.User.current.get('article'),
+  loader: state.User.meta.get('showHUD'),
+});
+
+let enhancer = connect(connectState, connectProps);
 
 function EditArticle(props) {
-
   const [article, setArticle] = useState({
     title: '',
-    description: '',
-    id: null
+    description: ''
   })
 
   useEffect(() => {
-    const headers = {
-      'Authorization': `Bearer ${localStorage.getItem("auth_token")}`
-    }
-    axios.get(`https://m-alpha-blog.herokuapp.com/api/v1/articles/${props.match.params.id}`, {
-      headers: headers
+    setArticle({
+      title: props.article && props.article.title,
+      description: props.article && props.article.description,
     })
-      .then(res => {
-        console.log(res)
-        setArticle({
-          title: res.data.title,
-          description: res.data.description,
-          id: res.data.id
-        })
-      })
-      .catch(err => {
 
-      })
     document.title = "Edit Article"
   }, [])
 
@@ -37,37 +35,20 @@ function EditArticle(props) {
     setArticle({ ...article, [event.target.name]: event.target.value })
   }
 
-  const editArticle = async (payload, token) => {
-    console.log("token is here", token)
-    const headers = {
-      'Authorization': `Bearer ${token}`
-    }
-    axios.patch(`https://m-alpha-blog.herokuapp.com/api/v1/articles/${article.id}`, { article: payload }, {
-      headers: headers
-    })
-      .then(res => {
-        console.log("---->", res)
-        if (res.data.data) {
-          alert("Article is edited")
-          props.history.push(`/article/${res.data.data.id}`)
-        } else {
-          alert("Invalid title or description")
-        }
-      })
-      .catch(err => {
-
-      })
-  }
-
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    let auth_token = localStorage.getItem("auth_token")
     let articlePayload = {
       title: article.title,
       description: article.description
     }
-    editArticle(articlePayload, auth_token)
+    let response = await props.editArticle(props.article && props.article.id, articlePayload)
+    if (response == 1) {
+      props.history.push(`/article/${props.article.id}`)
+
+    }
   }
+
+  let { loader } = props;
 
   return (
     <>
@@ -95,7 +76,16 @@ function EditArticle(props) {
                 type="submit"
                 onClick={handleSubmit}>
                 Edit Article
-            </Button>
+                {loader && <Spinner
+                  style={{ marginLeft: '10px' }}
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                }
+              </Button>
             </Form>
           </Col>
         </Row>
@@ -104,4 +94,4 @@ function EditArticle(props) {
   )
 }
 
-export default EditArticle
+export default enhancer(EditArticle)
