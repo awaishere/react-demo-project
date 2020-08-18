@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Container, Row, Col, Form, Button } from 'react-bootstrap'
 import axios from 'axios'
+import NavigationBar from './NavigationBar'
 
 function EditArticle(props) {
 
@@ -69,33 +70,37 @@ function EditArticle(props) {
   }
 
   return (
-    <Container style={{ marginTop: '10%' }}>
-      <Row style={{ marginTop: '20px' }}>
-        <Col className="d-flex flex-column container-style" xs={6} style={{ margin: '0 auto' }}>
-          <p id="header" className="align-self-center">Alpha Blog Application</p>
+    <>
+      <NavigationBar />
 
-          <Form className="d-flex flex-column">
-            <Form.Group controlId="formBasicText">
-              <Form.Label>Title</Form.Label>
-              <Form.Control type="text" value={article.title} name="title" placeholder="Enter title"
-                onChange={handleInput} />
-            </Form.Group>
+      <Container style={{ marginTop: '10%' }}>
+        <Row style={{ marginTop: '20px' }}>
+          <Col className="d-flex flex-column container-style" xs={6} style={{ margin: '0 auto' }}>
+            <p id="header" className="align-self-center">Alpha Blog Application</p>
 
-            <Form.Group controlId="formBasicText">
-              <Form.Label>Description</Form.Label>
-              <Form.Control type="text" value={article.description} name="description" placeholder="Enter description"
-                onChange={handleInput} />
-            </Form.Group>
+            <Form className="d-flex flex-column">
+              <Form.Group controlId="formBasicText">
+                <Form.Label>Title</Form.Label>
+                <Form.Control type="text" value={article.title} name="title" placeholder="Enter title"
+                  onChange={handleInput} />
+              </Form.Group>
 
-            <Button style={{ width: '40%' }} className="align-self-center" variant="outline-success"
-              type="submit"
-              onClick={handleSubmit}>
-              Edit Article
+              <Form.Group controlId="formBasicText">
+                <Form.Label>Description</Form.Label>
+                <Form.Control type="text" value={article.description} name="description" placeholder="Enter description"
+                  onChange={handleInput} />
+              </Form.Group>
+
+              <Button style={{ width: '40%' }} className="align-self-center" variant="outline-success"
+                type="submit"
+                onClick={handleSubmit}>
+                Edit Article
             </Button>
-          </Form>
-        </Col>
-      </Row>
-    </Container>
+            </Form>
+          </Col>
+        </Row>
+      </Container>
+    </>
   )
 }
 
