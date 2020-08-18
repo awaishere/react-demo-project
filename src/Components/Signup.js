@@ -4,12 +4,27 @@ import {
   Button,
   Container,
   Row,
-  Col
+  Col,
+  Spinner
 } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
-import axios from 'axios'
+import { Link, useHistory } from 'react-router-dom'
+
+import { UserActions } from '../store/actions'
+import { connect } from 'react-redux'
+
+let connectProps = {
+  ...UserActions,
+};
+
+let connectState = state => ({
+  loader: state.User.meta.get('showHUD'),
+});
+
+let enhancer = connect(connectState, connectProps);
 
 function Signup(props) {
+
+  let history = useHistory()
 
   useEffect(() => {
     document.title = "Signup"
@@ -33,25 +48,10 @@ function Signup(props) {
       email: person.email
     }
 
-    await axios.post('https://m-alpha-blog.herokuapp.com/api/v1/signup', {
-      "user": user
-    })
-      .then(res => {
-        console.log(res)
-        if (res.data.data) {
-          alert("User is created!")
-          localStorage.setItem("auth_token", res.data.data.attributes.auth_token)
-
-          props.history.push('profile')
-        } else {
-          alert("Invalid Username or password")
-        }
-
-      })
-      .catch(err => {
-        alert("Something went wrong")
-
-      })
+    let res = await props.signUp(user);
+    if (res) {
+      history.push('/profile')
+    }
   }
 
   const handleSubmit = e => {
@@ -59,6 +59,8 @@ function Signup(props) {
     createUser();
 
   }
+
+  let { loader } = props
 
   return (
     <Container style={{ marginTop: '10%' }}>
@@ -87,8 +89,18 @@ function Signup(props) {
 
             <Button style={{ width: '40%' }} className="align-self-center" variant="outline-success"
               type="submit"
+              disabled={loader}
               onClick={handleSubmit}>
               Sign up
+
+              {loader && <Spinner
+                style={{ marginLeft: '10px' }}
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />}
             </Button>
 
             <p className="align-self-center mt-4">
@@ -104,4 +116,4 @@ function Signup(props) {
   )
 }
 
-export default Signup
+export default enhancer(Signup)

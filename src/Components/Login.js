@@ -4,24 +4,28 @@ import {
   Button,
   Container,
   Row,
-  Col
+  Col,
+  Spinner
 } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
-import { toast } from 'react-toastify';
-import axios from 'axios'
+import { Link, useHistory } from 'react-router-dom'
+import { Loader } from './Loader';
 
-import { UserActions } from 'app/store/actions'
+import { UserActions } from '../store/actions'
 import { connect } from 'react-redux'
 
 let connectProps = {
   ...UserActions,
 };
 
-let connectState = state => ({});
+let connectState = state => ({
+  loader: state.User.meta.get('showHUD'),
+});
 
 let enhancer = connect(connectState, connectProps);
 
 function Login(props) {
+
+  let histroy = useHistory();
 
   useEffect(() => {
     document.title = "Login"
@@ -38,24 +42,10 @@ function Login(props) {
       password: person.password
     }
 
-    await axios.post('https://m-alpha-blog.herokuapp.com/api/v1/login', {
-      "user": user
-    })
-      .then(res => {
-        console.log(res)
-        if (res.data.data) {
-          alert("Logged in successfully")
-          localStorage.setItem("auth_token", res.data.data.attributes.auth_token)
-          props.history.push('profile')
-        } else {
-          alert("Invalid credentials")
-        }
-
-      })
-      .catch(err => {
-        alert("Something went wrong")
-
-      })
+    let res = await props.signIn(user);
+    if (res) {
+      histroy.push('/profile')
+    }
   }
 
   const handleInput = (event, field) => {
@@ -67,6 +57,8 @@ function Login(props) {
     e.preventDefault();
     validateUser()
   }
+
+  let { loader } = props;
 
   return (
     <Container style={{ marginTop: '10%' }}>
@@ -88,8 +80,17 @@ function Login(props) {
             </Form.Group>
 
             <Button style={{ width: '40%' }} className="align-self-center"
-              variant="outline-success" type="submit">
+              variant="outline-success" type="submit" disabled={loader}>
               Login
+
+              {loader && <Spinner
+                style={{ marginLeft: '10px' }}
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />}
             </Button>
 
             <p className="align-self-center mt-4">

@@ -1,3 +1,4 @@
 export default {
-    getProducts: () => `/products/`,
+    signIn: () => `/login/`,
+    signUp: () => `/signup/`,
 }
