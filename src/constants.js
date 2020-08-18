@@ -1,0 +1,1 @@
+export const API_URL = "https://m-alpha-blog.herokuapp.com/api/v1"
