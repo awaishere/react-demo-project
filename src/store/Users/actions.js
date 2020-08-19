@@ -104,3 +104,6 @@ export const createArticle = (payload) => async dispatch => {
   dispatch(hideHUD());
 }
 
+export const logoutPressed = () => async dispatch => {
+  dispatch({ type: 'RESET_STATE' });
+};

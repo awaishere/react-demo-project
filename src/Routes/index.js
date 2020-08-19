@@ -6,23 +6,27 @@ import {
 } from 'react-router-dom'
 import Login from '../Components/Login'
 import Signup from '../Components/Signup'
+
 import Profile from '../Components/Profile'
 import ShowArticle from '../Components/ShowArticle'
 import CreateArticle from '../Components/CreateArticle'
 import Logout from '../Components/Logout'
 import EditArticle from '../Components/EditArticle'
+import PublicRoute from './PublicRoute'
+import PrivateRoute from './PrivateRoute'
 
 function Routes() {
   return (
     <Router>
       <Switch>
-        <Route path={["/", "/login"]} exact component={Login} />
-        <Route path={["/profile"]} component={Profile} />
-        <Route path="/signup" component={Signup} />
-        <Route path="/create_article" component={CreateArticle} />
-        <Route path="/logout" component={Logout} />
-        <Route path="/article/:id" component={ShowArticle} />
-        <Route path="/edit_article/:id" component={EditArticle} />
+        <PublicRoute component={Login} path={["/", "/login"]} exact />
+        <PublicRoute component={Signup} path="/signup" />
+
+        <PrivateRoute component={Profile} path="/profile" />
+        <PrivateRoute component={CreateArticle} path="/create_article" />
+        <PrivateRoute component={Logout} path="/logout" />
+        <PrivateRoute component={ShowArticle} path="/article/:id" />
+        <PrivateRoute component={EditArticle} path="/edit_article/:id" />
       </Switch>
     </Router>
   )

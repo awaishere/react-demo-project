@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Route from './Routes/Routes'
+import Routes from './Routes'
 import { Provider } from 'react-redux'
 import { store } from './store'
 import { ToastContainer } from 'react-toastify';
@@ -15,7 +15,7 @@ function App() {
       <Container fluid className="pl-0 pr-0 justify-content-center">
         <div>
           <ToastContainer position="top-center" autoClose={3000} />
-          <Route />
+          <Routes />
         </div>
       </Container>
     </Provider>
