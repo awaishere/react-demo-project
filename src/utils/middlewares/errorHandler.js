@@ -9,10 +9,9 @@ export default () => next => action => {
       } catch (error) {
         dispatch(UserActions.hideHUD());
         let response = error.response;
-        console.log('error', error);
         if (response && (response.data || response.statusText)) {
+
           if (response.config.url) {
-            console.log(response.data ? response.data.errors : response.statusText);
             toast.error(
               response.data && response.data.errors
                 ? response.data.errors.join(', ')

@@ -19,6 +19,7 @@ let connectProps = {
 
 let connectState = state => ({
   loader: state.User.meta.get('showHUD'),
+  user: state.User.current.get('currentUser')
 });
 
 let enhancer = connect(connectState, connectProps);
@@ -41,11 +42,12 @@ function Login(props) {
       username: person.username,
       password: person.password
     }
-
-    let res = await props.signIn(user);
-    if (res) {
-      histroy.push('/profile')
-    }
+    await props.signIn(user)
+      .then((data) => {
+        if (data) {
+          histroy.push("/profile")
+        }
+      })
   }
 
   const handleInput = (event, field) => {

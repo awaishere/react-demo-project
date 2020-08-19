@@ -20,19 +20,28 @@ export const setCurrentUser = data => {
   };
 };
 
+// export const signIn = payload => async dispatch => {
+//   dispatch(showHUD());
+//   const { data } = await client().post(api.signIn(), { user: payload });
+//   console.log("response====> ", data)
+//   if (data.data) {
+//     dispatch(setCurrentUser(data.data));
+//     toast.success('Logged in Successfully');
+//     dispatch(hideHUD());
+//   } else {
+//     toast.error('Invalid Credentails!');
+//   }
+//   dispatch(hideHUD());
+//   return data
+// };
+
 export const signIn = payload => async dispatch => {
   dispatch(showHUD());
   const { data } = await client().post(api.signIn(), { user: payload });
-  if (data.data) {
-    dispatch(setCurrentUser(data.data));
-    toast.success('Logged in Successfully');
-    dispatch(hideHUD());
-    return 1
-  } else {
-    toast.error('Invalid Credentails!');
-  }
+  dispatch(setCurrentUser(data.data));
+  toast.success('Logged in Successfully');
   dispatch(hideHUD());
-
+  return data
 };
 
 export const signUp = payload => async dispatch => {
